@@ -1,5 +1,5 @@
 import inspect
-import logging
+from loguru import logger
 import sys
 from functools import wraps
 from typing import Any, Awaitable, Callable, Optional, Type, TypeVar
@@ -17,10 +17,11 @@ from starlette.responses import Response
 from fastapi_cache import FastAPICache
 from fastapi_cache.coder import Coder
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.NullHandler())
 P = ParamSpec("P")
 R = TypeVar("R")
+
+if FastAPICache.get_logging():
+    logger.add(sys.stderr, format="<cyan>CACHE:</> {time} {level} {message}", level="DEBUG")
 
 
 def cache(

@@ -13,6 +13,7 @@ class FastAPICache:
     _coder: Optional[Type[Coder]] = None
     _key_builder: Optional[Callable] = None
     _enable = True
+    _logging = False
 
     @classmethod
     def init(
@@ -23,6 +24,7 @@ class FastAPICache:
         coder: Type[Coder] = JsonCoder,
         key_builder: Callable = default_key_builder,
         enable: bool = True,
+        logging: bool = False,
     ) -> None:
         if cls._init:
             return
@@ -33,6 +35,7 @@ class FastAPICache:
         cls._coder = coder
         cls._key_builder = key_builder
         cls._enable = enable
+        cls._logging = logging
 
     @classmethod
     def reset(cls) -> None:
@@ -43,6 +46,7 @@ class FastAPICache:
         cls._coder = None
         cls._key_builder = None
         cls._enable = True
+        cls._logging = False
 
     @classmethod
     def get_backend(cls) -> Backend:
@@ -77,3 +81,7 @@ class FastAPICache:
         assert cls._backend and cls._prefix is not None, "You must call init first!"  # nosec: B101
         namespace = cls._prefix + (":" + namespace if namespace else "")
         return await cls._backend.clear(namespace, key)
+
+    @classmethod
+    def get_logging(cls) -> bool:
+        return cls._logging
