@@ -20,9 +20,6 @@ from fastapi_cache.coder import Coder
 P = ParamSpec("P")
 R = TypeVar("R")
 
-if FastAPICache.get_logging():
-    logger.add(sys.stderr, format="<cyan>CACHE:</> {time} {level} {message}", level="DEBUG")
-
 
 def cache(
     expire: Optional[int] = None,
