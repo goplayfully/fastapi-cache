@@ -15,7 +15,7 @@ def default_key_builder(
 ) -> str:
     from fastapi_cache import FastAPICache
 
-    prefix = f"{FastAPICache.get_prefix()}:{namespace}:"
+    prefix = f"{FastAPICache.get_prefix()}:{namespace}:{func.__name__}"
     cache_key = (
         prefix
         + hashlib.blake2b(f"{func.__module__}:{func.__name__}:{args}:{kwargs}".encode()).hexdigest()
