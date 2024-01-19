@@ -21,7 +21,7 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 if FastAPICache.get_logging():
-    logger.add(sys.stderr, format="{time} {level} {message}", level="DEBUG")
+    logger.add(sys.stderr, format="<cyan>CACHE:</> {time} {level} {message}", level="DEBUG")
 
 
 def cache(
