@@ -86,7 +86,7 @@ async def lifespan(_: FastAPI):
 
 ### Initialization
 
-Firstly you must call `FastAPICache.init` on startup event of `fastapi`, there are some global config you can pass in.
+Firstly you must call `FastAPICache.init` on startup event of `fastapi`, there are some global config you can pass in, including `logging` to enable debug logging for cache hits/misses.
 
 ### Use `cache` decorator
 
