@@ -152,29 +152,29 @@ def cache(
             else:
                 try:
                     ttl, encoded_ret = await backend.get_with_ttl(cache_key)
-                    if encoded_ret is None:
-                        logger.debug(f"Cache miss for key '{cache_key}'")
-                        ret = await ensure_async_func(*args, **kwargs)
-                    else:
-                        logger.debug(f"Cache hit for key '{cache_key}'")
-                        cache_hit = True
-                        ret = coder.decode(encoded_ret)
-                        etag = f"W/{hash(encoded_ret)}"
-
-                except Exception:
-                    logger.warning(
-                        f"Error retrieving cache key '{cache_key}' from backend:", exc_info=True
+                except Exception as exc:  # pylint: disable=W0718
+                    logger.opt(exception=True).warning(
+                        f"Error retrieving cache key '{cache_key}' from backend: {exc}",
+                        exc_info=True,
                     )
-                    ret = await ensure_async_func(*args, **kwargs)
+                    encoded_ret = None
 
+                if encoded_ret is None:
+                    logger.debug(f"Cache miss for key '{cache_key}'")
+                    ret = await ensure_async_func(*args, **kwargs)
+                else:
+                    logger.debug(f"Cache hit for key '{cache_key}'")
+                    cache_hit = True
+                    ret = coder.decode(encoded_ret)
+                    etag = f"W/{hash(encoded_ret)}"
             # if we DIDN'T read from cache, then we should store
             if cache_hit is False:
                 try:
                     encoded_ret = coder.encode(ret)
                     await backend.set(cache_key, encoded_ret, expire)
-                except Exception:
-                    logger.warning(
-                        f"Error setting cache key '{cache_key}' in backend:", exc_info=True
+                except Exception as exc:  # pylint: disable=W0718
+                    logger.opt(exception=True).warning(
+                        f"Error setting cache key '{cache_key}' in backend: {exc}", exc_info=True
                     )
 
             # Now we need to return something. If it's an internal method
