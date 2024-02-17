@@ -160,10 +160,10 @@ def cache(
                     encoded_ret = None
 
                 if encoded_ret is None:
-                    logger.debug(f"Cache miss for key '{cache_key}'")
+                    logger.trace(f"Cache miss for key '{cache_key}'")
                     ret = await ensure_async_func(*args, **kwargs)
                 else:
-                    logger.debug(f"Cache hit for key '{cache_key}'")
+                    logger.trace(f"Cache hit for key '{cache_key}'")
                     cache_hit = True
                     ret = coder.decode(encoded_ret)
                     etag = f"W/{hash(encoded_ret)}"
